@@ -1,0 +1,24 @@
+html {
+    background: $background-color;
+}
+
+body {
+    margin: 1.6rem;
+}
+
+.chart-wrapper {
+    text-align: center;
+    margin: 0 auto;
+
+    .chart {
+        width: 571px;
+
+        &.vertical {
+            width: 190px;
+            
+            &.multi-series {
+                width: 380px;
+            }
+        }
+    }
+}

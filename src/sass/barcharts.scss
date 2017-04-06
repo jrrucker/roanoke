@@ -1,0 +1,38 @@
+.bar-chart {
+
+    &.single-series {
+
+        .data-group:nth-child(1) {
+            fill: $data-color-1;
+        }
+
+        .data-group:nth-child(2) {
+            fill: $data-color-2;
+        }
+
+        .data-group:nth-child(3) {
+            fill: $data-color-3;
+        }
+
+        .data-group:nth-child(4) {
+            fill: $data-color-4;
+        }
+
+        .data-group:nth-child(5) {
+            fill: $data-color-5;
+        }
+    }
+
+    &.multi-series {
+
+        .series-1 {
+            fill: $data-color-1;
+        }
+
+        .series-2 {
+            fill: $data-color-2;
+        }
+
+    }
+
+}

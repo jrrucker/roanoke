@@ -1,0 +1,6 @@
+.chart {
+    background: $background-color;
+    border: 1px solid transparentize($axis-color, .8);
+    padding: 1.6rem;
+    margin: 1.6rem;
+}
