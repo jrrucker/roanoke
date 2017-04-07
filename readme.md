@@ -12,3 +12,4 @@
 * Javascript builder
 * Additional chart types
 * Expand theme(s)
+* Tests
