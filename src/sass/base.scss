@@ -9,16 +9,4 @@ body {
 .chart-wrapper {
     text-align: center;
     margin: 0 auto;
-
-    .chart {
-        width: 571px;
-
-        &.vertical {
-            width: 190px;
-            
-            &.multi-series {
-                width: 380px;
-            }
-        }
-    }
 }

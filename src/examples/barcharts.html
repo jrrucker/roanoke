@@ -7,6 +7,7 @@
         <script type="text/javascript" src="js/roanoke.pack.min.js"></script>
     </head>
     <body>
+        <!--
         <div class="chart-wrapper">
             <svg class="chart bar-chart horizontal single-series" viewbox="0 0 571 190" role="img">
                 <g class="data-group">
@@ -77,7 +78,6 @@
                 </g>
             </svg>
         </div>
-
         <div class="chart-wrapper">
             <svg class="chart bar-chart horizontal multi-series" viewbox="0 0 571 390" role="img">
                 <g class="data-group">
@@ -326,5 +326,19 @@
                 </g>
             </svg>
         </div>
+        -->
+        <div class="chart-wrapper" id="container-1"></div>
+
+        <script type="text/javascript">
+            (function() {
+                var chart1 = new Roanoke({
+                    container: 'container-1',
+                    data: {
+                        'series-1': [123, 23, 48, 12]
+                    },
+                    width: 800
+                });
+            })();
+        </script>
     </body>
 </html>

@@ -1,5 +1,2 @@
-(function() {
-
-    // do something
-
-})();
+import Chart from './chart';
+window.Roanoke = Chart;
