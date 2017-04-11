@@ -1,6 +1,7 @@
 'use strict';
 
 const gulp = require('gulp');
+const debug = require('gulp-debug');
 const plumber = require('gulp-plumber');
 const sass = require('gulp-sass')
 const webserver = require('gulp-webserver');
@@ -11,6 +12,8 @@ const gutil = require('gulp-util');
 const webpack = require('webpack');
 const path = require('path');
 const mochaPhantomJS = require('gulp-mocha-phantomjs');
+const istanbul = require('gulp-babel-istanbul');
+const isparta = require('isparta');
 
 // Config
 
@@ -38,17 +41,17 @@ const server = {
 const webpackConfig = {
     entry: './.tmp/js/roanoke.js',
     output: {
-        path: path.join(__dirname, 'dist', 'js'),
-        filename: 'roanoke.pack.min.js'
+        path: path.join(__dirname, '.tmp', 'js'),
+        filename: 'roanoke.pack.js'
     }
 };
 
 const testWebpackConfig = {
-	entry: './.tmp/test/test.js',
-	output: {
-		path: path.join(__dirname, '.tmp', 'test'),
-		filename: 'test.pack.js'
-	}
+    entry: './.tmp/test/test.js',
+    output: {
+        path: path.join(__dirname, '.tmp', 'test'),
+        filename: 'test.pack.js'
+    }
 };
 
 // Tasks
@@ -61,10 +64,10 @@ gulp.task('babel', () => {
 });
 
 gulp.task('babel-test', () => {
-	return gulp.src(source.tests)
-		.pipe(plumber())
-		.pipe(babel())
-		.pipe(gulp.dest(dist.tests));
+    return gulp.src(source.tests)
+        .pipe(plumber())
+        .pipe(babel())
+        .pipe(gulp.dest(dist.tests));
 });
 
 gulp.task('webpack', ['babel'], (callback) => {
@@ -86,22 +89,39 @@ gulp.task('webpack', ['babel'], (callback) => {
 });
 
 gulp.task('webpack-test', ['webpack', 'babel-test'], (callback) => {
-	webpack(testWebpackConfig, (err, stats) => {
-		if (err) {
-			throw new gutil.PluginError('webpack-test', err);
-		}
+    webpack(testWebpackConfig, (err, stats) => {
+        if (err) {
+            throw new gutil.PluginError('webpack-test', err);
+        }
 
-		gutil.log('[webpack-test]', stats.toString({
-			colors: true,
-			progress: true
-		}));
-		callback();
-	});
+        gutil.log('[webpack-test]', stats.toString({
+            colors: true,
+            progress: true
+        }));
+        callback();
+    });
+});
+
+gulp.task('pre-coverage', ['webpack-test'], () => {
+    return gulp.src('.tmp/js/**/*.js')
+        .pipe(debug())
+        .pipe(plumber())
+        .pipe(istanbul({
+            instrumenter: isparta.Instrumenter
+            //includeUntested: true
+        }))
+        .pipe(istanbul.hookRequire());
+});
+
+gulp.task('coverage', ['pre-coverage'], () => {
+    return gulp.src('test/runner.html')
+        .pipe(mochaPhantomJS())
+        .pipe(istanbul.writeReports());
 });
 
 gulp.task('test', ['webpack-test'], () => {
     return gulp.src('test/runner.html')
-    	.pipe(mochaPhantomJS());
+        .pipe(mochaPhantomJS());
 });
 
 gulp.task('sass', () => {
@@ -139,5 +159,4 @@ gulp.task('watch', () => {
 // });
 
 gulp.task('build', ['webpack', 'sass', 'copy']);
-
 gulp.task('default', ['build', 'webserver', 'watch']);
