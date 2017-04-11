@@ -10,7 +10,7 @@ const babel = require('gulp-babel');
 const gutil = require('gulp-util');
 const webpack = require('webpack');
 const path = require('path');
-const mocha = require('gulp-mocha');
+const mochaPhantomJS = require('gulp-mocha-phantomjs');
 
 // Config
 
@@ -19,13 +19,15 @@ const source = {
     indexes: 'src/examples/*.html',
     styles: 'src/sass/**/*.scss',
     scripts: 'src/js/**/*.js',
-    mainStyle: 'src/sass/styles.scss'
+    mainStyle: 'src/sass/styles.scss',
+    tests: 'test/**/*.js'
 };
 
 const dist = {
     root:'dist',
     styles: 'dist/css',
-    scripts: '.tmp/js'
+    scripts: '.tmp/js',
+    tests: '.tmp/test'
 };
 
 const server = {
@@ -37,9 +39,16 @@ const webpackConfig = {
     entry: './.tmp/js/roanoke.js',
     output: {
         path: path.join(__dirname, 'dist', 'js'),
-        publicPath: 'dist/js',
         filename: 'roanoke.pack.min.js'
     }
+};
+
+const testWebpackConfig = {
+	entry: './.tmp/test/test.js',
+	output: {
+		path: path.join(__dirname, '.tmp', 'test'),
+		filename: 'test.pack.js'
+	}
 };
 
 // Tasks
@@ -51,6 +60,13 @@ gulp.task('babel', () => {
         .pipe(gulp.dest(dist.scripts));
 });
 
+gulp.task('babel-test', () => {
+	return gulp.src(source.tests)
+		.pipe(plumber())
+		.pipe(babel())
+		.pipe(gulp.dest(dist.tests));
+});
+
 gulp.task('webpack', ['babel'], (callback) => {
     webpackConfig.plugins = [
         new webpack.optimize.UglifyJsPlugin()
@@ -59,7 +75,7 @@ gulp.task('webpack', ['babel'], (callback) => {
     webpack(webpackConfig, (err, stats) => {
         if (err) {
             throw new gutil.PluginError('webpack', err);
-        } 
+        }
 
         gutil.log('[webpack]', stats.toString({
             colors: true,
@@ -69,9 +85,23 @@ gulp.task('webpack', ['babel'], (callback) => {
     });
 });
 
-gulp.task('test', ['webpack'], () => {
-    return gulp.src('test/test.js', {read: false})
-        .pipe(mocha({reporter: 'nyan'}));
+gulp.task('webpack-test', ['webpack', 'babel-test'], (callback) => {
+	webpack(testWebpackConfig, (err, stats) => {
+		if (err) {
+			throw new gutil.PluginError('webpack-test', err);
+		}
+
+		gutil.log('[webpack-test]', stats.toString({
+			colors: true,
+			progress: true
+		}));
+		callback();
+	});
+});
+
+gulp.task('test', ['webpack-test'], () => {
+    return gulp.src('test/runner.html')
+    	.pipe(mochaPhantomJS());
 });
 
 gulp.task('sass', () => {
