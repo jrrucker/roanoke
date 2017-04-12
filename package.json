@@ -5,7 +5,7 @@
   "main": "gulpfile.js",
   "dependencies": {
     "expect.js": "^0.3.1",
-    "google-closure-compiler-js": "^20170218.0.0",
+    "google-closure-compiler": "^20170409.0.0",
     "gulp": "^3.9.1",
     "gulp-plumber": "^1.1.0",
     "gulp-rename": "^1.2.2",
