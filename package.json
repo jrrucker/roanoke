@@ -4,6 +4,7 @@
   "description": "An SVG chart utility.",
   "main": "gulpfile.js",
   "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
     "expect.js": "^0.3.1",
     "google-closure-compiler": "^20170409.0.0",
     "gulp": "^3.9.1",
@@ -13,12 +14,23 @@
     "gulp-webserver": "^0.9.1"
   },
   "devDependencies": {
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "gulp-istanbul-report": "0.0.1",
     "gulp-mocha-phantomjs": "^0.12.1",
     "gulp-util": "^3.0.8",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "systemjs": "^0.20.12"
   },
   "scripts": {
     "test": "gulp test"
+  },
+  "nyc": {
+    "exclude": [
+      "gulpfile.js",
+      "test/**/*.js"
+    ],
+    "instrument": true
   },
   "author": "Josh Rucker",
   "license": "MIT"

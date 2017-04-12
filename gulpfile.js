@@ -8,6 +8,7 @@ const rename = require('gulp-rename');
 const gutil = require('gulp-util');
 const mochaPhantomJS = require('gulp-mocha-phantomjs');
 const closureCompiler = require('google-closure-compiler').gulp();
+const istanbul = require('gulp-istanbul');
 
 // Config
 
@@ -71,6 +72,18 @@ gulp.task('test', ['compile-js-test'], () => {
         .pipe(mochaPhantomJS());
 });
 
+gulp.task('pre-coverage', ['compile-js-test'], () => {
+    return gulp.src('dist/js/roanoke.js')
+        .pipe(istanbul({includeUntested: true}))
+        .pipe(istanbul.hookRequire());
+});
+
+gulp.task('coverage', ['pre-coverage'], () => {
+    return gulp.src('test/runner.html')
+        .pipe(mochaPhantomJS())
+        .pipe(istanbul.writeReports());
+});
+
 gulp.task('sass', () => {
     return gulp.src(source.mainStyle)
         .pipe(plumber())
@@ -79,7 +92,7 @@ gulp.task('sass', () => {
 });
 
 gulp.task('webserver', () => {
-    return gulp.src(dist.root)
+    return gulp.src('./')
         .pipe(webserver({
             host: server.host,
             port: server.port,
