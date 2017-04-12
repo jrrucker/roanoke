@@ -4,27 +4,18 @@
   "description": "An SVG chart utility.",
   "main": "gulpfile.js",
   "dependencies": {
+    "expect.js": "^0.3.1",
+    "google-closure-compiler-js": "^20170218.0.0",
     "gulp": "^3.9.1",
-    "gulp-clean": "^0.3.2",
-    "gulp-rename": "^1.2.2",
     "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
     "gulp-webserver": "^0.9.1"
   },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "file:node_modules/babel-plugin-transform-es2015-modules-commonjs",
-    "babel-preset-es2015": "^6.24.1",
-    "glob": "^7.1.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-babel-istanbul": "^1.6.0",
-    "gulp-istanbul": "^1.1.1",
-    "gulp-mocha": "^4.3.0",
     "gulp-mocha-phantomjs": "^0.12.1",
     "gulp-util": "^3.0.8",
-    "isparta": "^4.0.0",
-    "mocha": "^3.2.0",
-    "mocha-phantomjs-istanbul": "0.0.2",
-    "webpack": "^2.3.3"
+    "mocha": "^3.2.0"
   },
   "scripts": {
     "test": "gulp test"

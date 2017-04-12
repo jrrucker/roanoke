@@ -6,7 +6,7 @@ export default {
         const svg = document.createElementNS(SVG_NS, 'svg');
 
         if (clsArr) {
-        	clsArr.forEach(cls => svg.classList.add(cls));
+            clsArr.forEach(cls => svg.classList.add(cls));
         }
 
         svg.setAttributeNS(null, 'role', 'img');

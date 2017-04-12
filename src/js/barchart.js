@@ -1,9 +1,9 @@
-import SVG from './svg';
-import Axis from './axis';
+import _svg from './svg';
+import _axis from './axis';
 
+const CHART_MARGIN = 10;
 const BAR_GAP = 10;
 const BAR_SIZE = 20;
-const CHART_MARGIN = 10;
 const TICK_CNT = 10;
 
 function maxVal (values) {
@@ -17,9 +17,9 @@ function maxVal (values) {
 }
 
 function buildBar(startX, startY, barLength) {
-    const gGroup = SVG.g('data-group');
-    const gBar = SVG.g('bar');
-    const rBar = SVG.rect(startX, startY, barLength, BAR_SIZE);
+    const gGroup = _svg.g('data-group');
+    const gBar = _svg.g('bar');
+    const rBar = _svg.rect(startX, startY, barLength, BAR_SIZE);
 
     gGroup.appendChild(gBar);
     gBar.appendChild(rBar);
@@ -62,15 +62,15 @@ function buildAxis(startX, startY, width) {
     // TODO support other axis
 
     // x axis
-    const gInfo = SVG.g('data-info');
-    const gAxis = Axis.x(startX, startY, width, TICK_CNT);
+    const gInfo = _svg.g('data-info');
+    const gAxis = _axis.x(startX, startY, width, TICK_CNT);
     gInfo.appendChild(gAxis);
     return gInfo;
 }
 
 export default function (height, width, orientation, data) {
 
-    const chart = SVG.svg(['chart', 'bar-chart']);
+    const chart = _svg.svg(['chart', 'bar-chart']);
     const startX = CHART_MARGIN;
     const startY = CHART_MARGIN;
 
@@ -85,9 +85,9 @@ export default function (height, width, orientation, data) {
     chart.classList.add(orientationClass);
 
     // add viewbox, height, and width attributes
-    SVG.addAttribute(chart, 'viewbox', `0 0 ${width} ${height}`);
-    SVG.addAttribute(chart, 'height', height);
-    SVG.addAttribute(chart, 'width', width);
+    _svg.addAttribute(chart, 'viewbox', `0 0 ${width} ${height}`);
+    _svg.addAttribute(chart, 'height', height);
+    _svg.addAttribute(chart, 'width', width);
 
     // build bars based
     let bars;
@@ -98,7 +98,7 @@ export default function (height, width, orientation, data) {
     } else if (isMultiSeries) {
         bars = buildVerticalMulti();
     } else {
-        bars = buildVericalSingle();
+        bars = buildVerticalSingle();
     }
 
     // append elements to chart

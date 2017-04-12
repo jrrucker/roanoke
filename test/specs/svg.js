@@ -1,19 +1,21 @@
-import SVG from '../../js/svg';
+describe ('SVG Utilities', function () {
 
-const assert = require('assert');
+    var chart;
 
-describe ('SVG Utilities', () => {
-
-    it ('will generate an svg object without any classes', () => {
-        const element = SVG.svg();
-        assert.equal(element.classList.length, 0);
+    beforeEach(function () {
+        chart = new roanoke();
     });
 
-    it ('will generate an svg object with provided classes', () => {
-        const element = SVG.svg(['richmond', 'lynchburg']);
-        assert.equal(element.classList.length, 2);
-        assert.equal(element.classList.contains('richmond'), true);
-        assert.equal(element.classList.contains('lynchburg'), true);
+    it ('will generate an svg object without any classes', function () {
+        var element = chart.svg.svg();
+        expect(element.classList.length).to.be(0);
+    });
+
+    it ('will generate an svg object with provided classes', function () {
+        var element = chart.svg.svg(['richmond', 'lynchburg']);
+        expect(element.classList.length).to.be(2);
+        expect(element.classList.contains('richmond')).to.be.ok();
+        expect(element.classList.contains('lynchburg')).to.be.ok();
     });
 
 });

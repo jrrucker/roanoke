@@ -4,7 +4,6 @@
         <title>SVG Charts | Bar Charts | Horizontal</title>
         <meta charset="UTF-8" />
         <link href="css/styles.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="js/roanoke.pack.min.js"></script>
     </head>
     <body>
         <!--
@@ -329,16 +328,16 @@
         -->
         <div class="chart-wrapper" id="container-1"></div>
 
+        <script type="text/javascript" src="js/roanoke.min.js"></script>
         <script type="text/javascript">
-            (function() {
-                var chart1 = new Roanoke({
-                    container: 'container-1',
-                    data: {
-                        'series-1': [123, 23, 48, 12]
-                    },
-                    width: 800
-                });
-            })();
+            var chart1 = new roanoke({
+                container: 'container-1',
+                data: {
+                    'series-1': [123, 23, 48, 12]
+                },
+                width: 800
+            });
+            chart1.draw();
         </script>
     </body>
 </html>
