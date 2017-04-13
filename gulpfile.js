@@ -32,7 +32,7 @@ const server = {
 };
 
 const compilerOptions = {
-    compilation_level: 'ADVANCED_OPTIMIZATIONS',
+    compilation_level: 'SIMPLE_OPTIMIZATIONS',
     warning_level: 'VERBOSE',
     dependency_mode: 'LOOSE',
     language_in: 'ECMASCRIPT6_STRICT',
