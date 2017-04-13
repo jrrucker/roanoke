@@ -1,24 +1,25 @@
-import _svg from './svg';
+export default function (noke)  {
 
-export default  {
+    return {
 
-    x(startX, startY, width, ticks) {
-        const gAxis = _svg.g(['axis', 'x']);
-        const rAxis = _svg.rect(startX, startY, width, 1);
-        gAxis.appendChild(rAxis);
+        x(startX, startY, width, ticks) {
+            const gAxis = noke._svg.createG(['axis', 'x']);
+            const rAxis = noke._svg.createRect(startX, startY, width, 1);
+            gAxis.appendChild(rAxis);
 
-        let tickCnt = ticks;
-        while (tickCnt-- >= 0) {
-            const rTick = _svg.rect(startX, startY, 1, 10);
-            startX += width / ticks;
-            gAxis.appendChild(rTick);
+            let tickCnt = ticks;
+            while (tickCnt-- >= 0) {
+                const rTick = noke._svg.createRect(startX, startY, 1, 10);
+                startX += width / ticks;
+                gAxis.appendChild(rTick);
+            }
+
+            return gAxis;
+        },
+
+        y() {
+            //TODO
         }
-
-        return gAxis;
-    },
-
-    y() {
-        //TODO
     }
 
 };

@@ -1,110 +1,105 @@
-import _svg from './svg';
-import _axis from './axis';
+export default function (noke) {
 
-const CHART_MARGIN = 10;
-const BAR_GAP = 10;
-const BAR_SIZE = 20;
-const TICK_CNT = 10;
+    return {
 
-function maxVal (values) {
-    let max;
-    values.forEach((val) => {
-        if (val > max || !max) {
-            max = val;
+        buildBar(startX, startY, barLength) {
+            const BAR_SIZE = noke.options.BAR_SIZE;
+            const gGroup = noke._svg.createG('data-group');
+            const gBar = noke._svg.createG('bar');
+            const rBar = noke._svg.createRect(startX, startY, barLength, BAR_SIZE);
+
+            gGroup.appendChild(gBar);
+            gBar.appendChild(rBar);
+
+            return gGroup;
+        },
+
+        buildHorizontalMulti() {
+            //TODO
+        },
+
+        buildHorizontalSingle(startX, startY, width, data) {
+            // calculate scale
+
+            data = data[Object.keys(data)[0]];
+            const scale = width / (Math.ceil(noke._utilities.maxVal(data) /9) * 10);
+            const BAR_GAP = noke.options.BAR_GAP;
+            const BAR_SIZE = noke.options.BAR_SIZE;
+
+            const elems =  data.map((val) => {
+                const barLength = val*scale;
+                const bar = this.buildBar(startX, startY, barLength);
+                startY += BAR_SIZE + BAR_GAP;
+                return bar;
+            });
+
+            const axis = this.buildAxis(startX, startY + BAR_GAP, width);
+            elems.push(axis);
+
+            return elems;
+        },
+
+        buildVerticalMulti() {
+            //TODO
+        },
+
+        buildVerticalSingle() {
+            //TODO
+        },
+
+        buildAxis(startX, startY, width) {
+            const TICK_CNT = noke.options.TICK_CNT;
+            // TODO support other axis
+
+            // x axis
+            const gInfo = noke._svg.createG('data-info');
+            const gAxis = noke._axis.x(startX, startY, width, TICK_CNT);
+            gInfo.appendChild(gAxis);
+            return gInfo;
+        },
+
+        createChart(height, width, orientation, data) { 
+
+            const CHART_MARGIN = noke.options.CHART_MARGIN;
+
+            const chart = noke._svg.createSvg(['chart', 'bar-chart']);
+            const startX = noke.options.CHART_MARGIN;
+            const startY = noke.options.CHART_MARGIN;
+
+            // determine if multi-series
+            const isMultiSeries = data.length > 1;
+            const seriesClass = isMultiSeries ? 'multi-series' : 'single-series';
+            chart.classList.add(seriesClass);
+
+            // determine orientation
+            const isHorizontal = (orientation === 'horizontal');
+            const orientationClass = isHorizontal ? 'horizontal' : 'vertical';
+            chart.classList.add(orientationClass);
+
+            // add viewbox, height, and width attributes
+            noke._svg.updateAttribute(chart, 'viewbox', `0 0 ${width} ${height}`);
+            noke._svg.updateAttribute(chart, 'height', height);
+            noke._svg.updateAttribute(chart, 'width', width);
+
+            // build bars based
+            let bars;
+            if (isHorizontal && isMultiSeries) {
+                bars = this.buildHorizontalMulti();
+            } else if (isHorizontal) {
+                bars = this.buildHorizontalSingle(startX, startY, width-2*CHART_MARGIN, data);
+            } else if (isMultiSeries) {
+                bars = this.buildVerticalMulti();
+            } else {
+                bars = this.buildVerticalSingle();
+            }
+
+            // append elements to chart
+            bars.forEach((bars) => chart.appendChild(bars));
+
+            return chart;
+
         }
-    });
-    return max;
-}
 
-function buildBar(startX, startY, barLength) {
-    const gGroup = _svg.g('data-group');
-    const gBar = _svg.g('bar');
-    const rBar = _svg.rect(startX, startY, barLength, BAR_SIZE);
-
-    gGroup.appendChild(gBar);
-    gBar.appendChild(rBar);
-
-    return gGroup;
-}
-
-function buildHorizontalMulti() {
-    //TODO
-}
-
-function buildHorizontalSingle(startX, startY, width, data) {
-    // calculate scale
-
-    data = data[Object.keys(data)[0]];
-    const scale = width / (Math.ceil(maxVal(data) /9) * 10);
-
-    const elems =  data.map((val) => {
-        const barLength = val*scale;
-        const bar = buildBar(startX, startY, barLength);
-        startY += BAR_SIZE + BAR_GAP;
-        return bar;
-    });
-
-    const axis = buildAxis(startX, startY + BAR_GAP, width);
-    elems.push(axis);
-
-    return elems;
-}
-
-function buildVerticalMulti() {
-    //TODO
-}
-
-function buildVerticalSingle() {
-    //TODO
-}
-
-function buildAxis(startX, startY, width) {
-    // TODO support other axis
-
-    // x axis
-    const gInfo = _svg.g('data-info');
-    const gAxis = _axis.x(startX, startY, width, TICK_CNT);
-    gInfo.appendChild(gAxis);
-    return gInfo;
-}
-
-export default function (height, width, orientation, data) {
-
-    const chart = _svg.svg(['chart', 'bar-chart']);
-    const startX = CHART_MARGIN;
-    const startY = CHART_MARGIN;
-
-    // determine if multi-series
-    const isMultiSeries = data.length > 1;
-    const seriesClass = isMultiSeries ? 'multi-series' : 'single-series';
-    chart.classList.add(seriesClass);
-
-    // determine orientation
-    const isHorizontal = (orientation === 'horizontal');
-    const orientationClass = isHorizontal ? 'horizontal' : 'vertical';
-    chart.classList.add(orientationClass);
-
-    // add viewbox, height, and width attributes
-    _svg.addAttribute(chart, 'viewbox', `0 0 ${width} ${height}`);
-    _svg.addAttribute(chart, 'height', height);
-    _svg.addAttribute(chart, 'width', width);
-
-    // build bars based
-    let bars;
-    if (isHorizontal && isMultiSeries) {
-        bars = buildHorizontalMulti();
-    } else if (isHorizontal) {
-        bars = buildHorizontalSingle(startX, startY, width-2*CHART_MARGIN, data);
-    } else if (isMultiSeries) {
-        bars = buildVerticalMulti();
-    } else {
-        bars = buildVerticalSingle();
-    }
-
-    // append elements to chart
-    bars.forEach((bars) => chart.appendChild(bars));
-
-
-    return chart;
+    };
 
 };

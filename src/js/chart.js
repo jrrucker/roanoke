@@ -1,39 +1,50 @@
 import _barchart from './barchart'
 import _svg from './svg';
 import _axis from './axis';
+import _utilities from './utilities';
 
-const CHART_MARGIN = 10;
-const BAR_GAP = 10;
-const BAR_SIZE = 20;
-const TICK_CNT = 10;
+const DEFAULTS = {
+    CHART_MARGIN: 10,
+    BAR_GAP: 10,
+    BAR_SIZE: 20,
+    TICK_CNT: 10
+};
 
-function maxVal (values) {
-    let max;
-    values.forEach((val) => {
-        if (val > max || !max) {
-            max = val;
-        }
-    });
-    return max;
-}
+// options
+// - type
+// - themes
+// - width
+// - height
+// - aspect?
+// - axis
+// - ticks
+// - legend key
+// - container
 
-window['roanoke'] = function (options) {
+window['roanoke'] = function (options = {}) {
     const self = this;
 
-    self['svg'] = _svg;
-    self['axis'] = _axis;
-    self['barchart'] = _barchart;
+    const keys = Object.keys(options);
+    self.options = DEFAULTS;
 
-    // options
-    // - type
-    // - themes
-    // - width
-    // - height
-    // - aspect?
-    // - axis
-    // - ticks
-    // - legend key
-    // - container
+    keys.forEach((key) => {
+        self.options[key] = options[key];
+    }); 
+
+    // Public API
+
+    self.set = (key, value) => {
+        options[key] = value;
+        return self;
+    };
+
+    // Private API
+
+    self._utilities = _utilities;
+    self._svg = _svg;
+    self._axis= _axis(self);
+
+    self._barchart = _barchart(self);
 
     self['draw'] = function () {
         const container = document.getElementById(options['container']);
@@ -44,17 +55,17 @@ window['roanoke'] = function (options) {
         if (!height) {
             //TODO should handle multiseries
             const seriesData = data[Object.keys(data)[0]];
-            height = CHART_MARGIN*2 + seriesData.length*(BAR_GAP+BAR_SIZE) - BAR_GAP + 3*CHART_MARGIN;
+            height = self.options.CHART_MARGIN*2 + seriesData.length*(self.options.BAR_GAP+self.options.BAR_SIZE) - self.options.BAR_GAP + 3*self.options.CHART_MARGIN;
         }
 
         // calulate width
         let width = options['width'];
         if (!width) {
-            width = Math.ceil(maxVal(data) / 8) * 10;
+            width = Math.ceil(self._utilities.maxVal(data) / 8) * 10;
         }
 
         // create chart
-        const chart = _barchart(height, width, 'horizontal', data);
+        const chart = self._barchart.createChart(height, width, 'horizontal', data);
 
         // append chart to dom container
         container.appendChild(chart);
